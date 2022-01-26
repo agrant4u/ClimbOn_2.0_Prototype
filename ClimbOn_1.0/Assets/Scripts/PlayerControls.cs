@@ -311,6 +311,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5ab12165-d30e-4df8-a100-304e98a6baa7"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""71414fe9-0784-40a3-ab77-4362adcf475a"",
                     ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",

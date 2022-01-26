@@ -172,6 +172,8 @@ public class sCharacterController : MonoBehaviour
         }
 
         HealthCheck();
+
+        
         
     }
 
@@ -221,11 +223,26 @@ public class sCharacterController : MonoBehaviour
 
     }
 
+    IEnumerator FallCheck()
+    {
+
+        Vector3 currentPos;
+        Vector3 oldPos;
+        
+        
+        currentPos = gameObject.transform.position;
+
+        yield return new WaitForSeconds(0.2f);
+
+
+    }
+
     void PlayerDeath()
     {
 
         Vector3 offset = new Vector3(0, 1f, 0);
         gameObject.transform.position = currentCheckPointPosition + offset;
+        sCharacterController.isDead = false;
 
     }
 
