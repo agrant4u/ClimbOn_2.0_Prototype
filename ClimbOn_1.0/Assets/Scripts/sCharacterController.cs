@@ -87,7 +87,7 @@ public class sCharacterController : MonoBehaviour
 
     public Transform[] checkPoints;
     int checkPointPos;
-    Transform currentCheckPointPosition;
+    Vector3 currentCheckPointPosition;
 
     public GameObject masterPlayer;
 
@@ -144,6 +144,8 @@ public class sCharacterController : MonoBehaviour
 
     void Start()
     {
+
+        //globalPlayerReference = this;
         isOverHanging = false;
         isJumping = false;
         rb = GetComponent<Rigidbody>();
@@ -169,7 +171,7 @@ public class sCharacterController : MonoBehaviour
             jumpDown = controller.Gameplay.Jump.triggered;
         }
 
-
+        HealthCheck();
         
     }
 
@@ -203,8 +205,28 @@ public class sCharacterController : MonoBehaviour
     void SetNewCheckPoint()
     {
         checkPointPos++;
-        currentCheckPointPosition = checkPoints[checkPointPos];
+        currentCheckPointPosition = checkPoints[checkPointPos].position;
         
+    }
+
+    void HealthCheck()
+    {
+
+        if (sCharacterController.isDead)
+        {
+
+            PlayerDeath();
+
+        }
+
+    }
+
+    void PlayerDeath()
+    {
+
+        Vector3 offset = new Vector3(0, 1f, 0);
+        gameObject.transform.position = currentCheckPointPosition + offset;
+
     }
 
     void MovementHandler()
@@ -576,8 +598,21 @@ public class sCharacterController : MonoBehaviour
 
             if(!isJumping)
             {
-                isJumping = true;
-                rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+                // WALL JUMP
+                if (currentState == PlayerControlState.CLIMBING)
+                {
+                    isJumping = true;
+                    rb.AddForce(new Vector3(0, jumpForce, -jumpForce/2), ForceMode.Impulse);
+                }
+
+                //REGULAR JUMP
+                else
+                {
+                    isJumping = true;
+                    rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+                }
+
+                
             }
            
 
