@@ -34,7 +34,7 @@ public class sCharacterController : MonoBehaviour
     [SerializeField] Transform cameraTarget;
     Vector3 cameraPivot;
     Vector3 cameraOffset;
-    [SerializeField] float cameraSensitivity = 5f;
+    //[SerializeField] float cameraSensitivity = 5f;
     // CINEMACHINE
     public GameObject camController;
     CinemachineFreeLook freeLookCam;
@@ -98,7 +98,7 @@ public class sCharacterController : MonoBehaviour
     {
 
         // SETS STARTING PLAYER POSITION TO 1st CheckPoint or StartingPoint
-        currentCheckPointPosition = checkPoints[0];
+        //currentCheckPointPosition = checkPoints[0];
 
         //shoulderLeftAnimator = shoulderLeft.GetComponent<Animator>();
         //shoulderRightAnimator = shoulderRight.GetComponent<Animator>();

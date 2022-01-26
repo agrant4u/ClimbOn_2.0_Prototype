@@ -40,7 +40,7 @@ public class sRockFall : MonoBehaviour
     public void RockSpawner()
     {
 
-        Vector3 spawnLocation = new Vector3();
+        //Vector3 spawnLocation = new Vector3();
 
         Instantiate(pRock, rockSpawnLocation.position, Quaternion.identity);
 
