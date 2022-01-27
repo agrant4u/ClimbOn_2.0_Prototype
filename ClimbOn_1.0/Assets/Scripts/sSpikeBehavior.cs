@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class sSpikeBehavior : MonoBehaviour
 {
+    public bool instantKill = true;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -12,7 +13,7 @@ public class sSpikeBehavior : MonoBehaviour
 
         player = collision.gameObject.GetComponent<sCharacterController>();
 
-        if(player)
+        if(player && instantKill)
         {
 
             sCharacterController.isDead = true;
