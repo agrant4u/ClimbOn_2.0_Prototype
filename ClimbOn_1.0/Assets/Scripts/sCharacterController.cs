@@ -56,6 +56,7 @@ public class sCharacterController : MonoBehaviour
     [Header("Health")]
     public float maxHitPoints = 100; // make static?
     public static float currentHitPoints;
+    public float fallKillDistance = 10f;
 
     public static bool isDead = false;
 
@@ -226,13 +227,26 @@ public class sCharacterController : MonoBehaviour
     IEnumerator FallCheck()
     {
 
-        Vector3 currentPos;
-        Vector3 oldPos;
-        
-        
-        currentPos = gameObject.transform.position;
+        Vector3 currentPos = gameObject.transform.position;
+        Vector3 oldPos = currentPos;
 
-        yield return new WaitForSeconds(0.2f);
+        for (int i = 0; i < 10; i++)
+        { 
+
+            currentPos = gameObject.transform.position;
+            float difference = currentPos.y - oldPos.y;
+
+            // CHECKS FOR FALL DEATH
+            if (difference >= fallKillDistance)
+            {
+                sCharacterController.isDead = true;
+            }
+
+            yield return new WaitForSeconds(0.2f);
+
+        }
+
+        
 
 
     }
@@ -601,13 +615,14 @@ public class sCharacterController : MonoBehaviour
     void Sprint()  // USED FOR CONTROLS
     {
 
-        isSprinting = !isSprinting;
+        isSprinting = !isSprinting;  // DONT CHANGE THIS
               
-
     }
 
     void Jump(InputAction.CallbackContext _context)  // JUMP ACTION.  FEET HAVE OTHER SCRIPT TO CHECK FOR GROUND COLLISION
     {
+
+        Vector2 input = controller.Gameplay.Movement.ReadValue<Vector2>();
 
         if (!jumpDown)
         {
@@ -619,22 +634,20 @@ public class sCharacterController : MonoBehaviour
                 if (currentState == PlayerControlState.CLIMBING)
                 {
                     isJumping = true;
-                    rb.AddForce(new Vector3(0, jumpForce, -jumpForce/2), ForceMode.Impulse);
+                    rb.AddForce(new Vector3(input.x * jumpForce, input.y * jumpForce, 0), ForceMode.Impulse);
                 }
 
-                //REGULAR JUMP
-                else
+                //REGULAR WALK JUMP
+                else if (currentState == PlayerControlState.WALKING)
                 {
                     isJumping = true;
                     rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
                 }
 
-                
-            }
-           
-
+            }        
 
         }
+
     }
 
     void CameraUpdate()
