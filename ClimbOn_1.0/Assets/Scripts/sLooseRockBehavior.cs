@@ -9,6 +9,9 @@ public class sLooseRockBehavior : MonoBehaviour
     public float rockKnockdownForce;
 
     public float fallOffset;
+    public float fallTime = 0.25f;
+
+    Vector3 offset;
 
     Rigidbody rb;
 
@@ -17,26 +20,43 @@ public class sLooseRockBehavior : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
 
+        offset = new Vector3(0, fallOffset, 0);
+
     }
 
     private void OnCollisionEnter(Collision collision)
     {
 
-        sCharacterController player;
+        //sCharacterController player;
 
-        player = collision.gameObject.GetComponent<sCharacterController>();
+        //player = collision.gameObject.GetComponent<sCharacterController>();
 
-        if (player)
+
+
+        if (collision.gameObject.CompareTag("Player"))
         {
 
-            Debug.Log("Loose Rock triggered by " + player.name);
+            float elapsedTime = 0f;
+           
+
+            Debug.Log("Loose Rock triggered by " + collision.gameObject.name);
 
             // SHOOTS ROCK OUT
             rb.useGravity = true;
             rb.AddForce(0, 0, -rockFallForce, ForceMode.Impulse);
 
             // KNOCKS PLAYER DOWN
-            player.GetComponent<Rigidbody>().AddForce(0, -rockKnockdownForce, 0, ForceMode.Impulse);
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(0, -rockKnockdownForce, 0, ForceMode.Impulse);
+            
+
+            while (elapsedTime < fallTime)
+            {
+                //collision.gameObject.transform.position = Vector3.Lerp(collision.transform.position, collision.transform.position - offset, (elapsedTime/fallTime));
+                //collision.gameObject.transform.rotation = Quaternion.Lerp(collision.transform.rotation, collision.transform.rotation, (elapsedTime / fallTime));
+                
+
+                elapsedTime += Time.deltaTime;
+            }
 
             //Vector3 currentPos = player.gameObject.transform.position;
             //Vector3 fallPos = new Vector3(currentPos.x, currentPos.y - fallOffset, currentPos.z);

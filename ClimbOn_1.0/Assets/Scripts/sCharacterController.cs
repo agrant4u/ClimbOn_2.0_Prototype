@@ -650,6 +650,26 @@ public class sCharacterController : MonoBehaviour
 
     }
 
+    private bool isFacingWall()
+    {
+        //TODO: set angle threshold on wall facing
+
+        RaycastHit hitInfo1, hitInfo2;
+        LayerMask mask = LayerMask.GetMask("Default");
+
+        //hard coding radius and player half height
+        //cast at eye level
+        Physics.SphereCast(transform.position + new Vector3(0, 0.25f, 0), 0.35f, transform.forward, out hitInfo1,
+            0.5f, mask.value, QueryTriggerInteraction.Ignore);
+
+        //cast at waist level
+        Physics.SphereCast(transform.position, 0.35f, Vector3.down, out hitInfo2,
+            0.5f, mask.value, QueryTriggerInteraction.Ignore);
+
+        return (hitInfo1.collider != null || hitInfo2.collider != null);
+
+    }
+
     void CameraUpdate()
     {
 

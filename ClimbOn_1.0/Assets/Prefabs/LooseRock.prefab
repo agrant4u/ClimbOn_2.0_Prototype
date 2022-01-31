@@ -127,4 +127,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rockFallForce: 200
-  rockKnockdownForce: 0.1
+  rockKnockdownForce: 1000
+  fallOffset: 0.15
+  fallTime: 5
