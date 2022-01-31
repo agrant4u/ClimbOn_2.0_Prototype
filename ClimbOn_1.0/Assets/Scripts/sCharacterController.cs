@@ -14,10 +14,12 @@ public class sCharacterController : MonoBehaviour
     [Space]
     [Header("Movement")]
     [SerializeField] float climbSpeed = 5f;
-    private float totalClimbSpeed;
+    float totalClimbSpeed;
+
+    float climbSlowDownAmount=0;
 
     [SerializeField] float walkSpeed = 5f;
-    private float startingWalkSpeed;
+    float startingWalkSpeed;
 
     public float sprintMultiplier = 2f;
 
@@ -56,12 +58,13 @@ public class sCharacterController : MonoBehaviour
     [Header("Health")]
     public float maxHitPoints = 100; // make static?
     public static float currentHitPoints;
+    public float fallKillDistance = 10f;
 
     public static bool isDead = false;
 
     [Space]
     [Header("Walk Stamina")]
-    public float maxStamina = 100; // make static?
+    public static float maxStamina = 100;
     public static float currentStamina;
     [Space]
     public float staminaDrainPerSec = 5;
@@ -71,13 +74,11 @@ public class sCharacterController : MonoBehaviour
 
     [Space]
     [Header("Climb Stamina")]
-    public float maxClimbStamina = 100; // make static?
-    public static float currentClimbStamina;
     [Space]
     public float staminaClimbDrainPerSec = 5;
     public float staminaClimbRecoveryPerSec = 2;
 
-    public static sCharacterController globalPlayerReference;
+    //public static sCharacterController globalPlayerReference;
 
     //public GameObject shoulderRight;
     //public GameObject shoulderLeft;
@@ -223,16 +224,30 @@ public class sCharacterController : MonoBehaviour
 
     }
 
+    // NEEDS WORK!
     IEnumerator FallCheck()
     {
 
-        Vector3 currentPos;
-        Vector3 oldPos;
-        
-        
-        currentPos = gameObject.transform.position;
+        Vector3 currentPos = gameObject.transform.position;
+        Vector3 oldPos = currentPos;
 
-        yield return new WaitForSeconds(0.2f);
+        for (int i = 0; i < 10; i++)
+        { 
+
+            currentPos = gameObject.transform.position;
+            float difference = currentPos.y - oldPos.y;
+
+            // CHECKS FOR FALL DEATH
+            if (difference >= fallKillDistance)
+            {
+                sCharacterController.isDead = true;
+            }
+
+            yield return new WaitForSeconds(0.2f);
+
+        }
+
+        
 
 
     }
@@ -345,30 +360,6 @@ public class sCharacterController : MonoBehaviour
         Vector3 checkDirection = Vector3.zero;
         int k = 0;
 
-        float totalClimbSpeed = climbSpeed;
-
-        if (isSprinting)
-        {
-
-            SetAnimatorSpeed(animatorSpeed * sprintMultiplier);
-
-            if (currentStamina > 0)
-            {
-                Debug.Log("Sprinting happening");
-                totalClimbSpeed *= sprintMultiplier;
-                currentStamina -= staminaDrainPerSec * Time.fixedDeltaTime;
-            }
-        }
-
-        else
-        {
-            SetAnimatorSpeed(animatorSpeed);
-            Debug.Log("Not Sprinting");
-            currentStamina += staminaRecoveryPerSec * Time.deltaTime;
-            if (currentStamina > maxStamina)
-                currentStamina = maxStamina;
-        }
-
         // RAYCASTS 4 times to check for direction AVG
         for (int i = 0; i < 4; i++)
         {
@@ -411,21 +402,44 @@ public class sCharacterController : MonoBehaviour
 
 
             // WALL BEHAVIOR
-
             sWallBehavior wallBehavior;
+            wallBehavior = hit.transform.gameObject.GetComponent<sWallBehavior>();
             
-            if (hit.transform.gameObject.GetComponent<sWallBehavior>())
+            if (wallBehavior)
             {
 
-                
-                wallBehavior = hit.transform.gameObject.GetComponent<sWallBehavior>();
-                Debug.Log(wallBehavior.slip);
+                // SETS SLOWDOWN AMOUNT BASED ON WALL BEHAVIOR
+                climbSlowDownAmount = wallBehavior.CheckSlowDownState();
+                //Debug.Log(wallBehavior.slip);
 
 
 
             }
 
-           
+            // MOVEMENT
+            totalClimbSpeed = climbSpeed/climbSlowDownAmount;
+
+            if (isSprinting)
+            {
+
+                SetAnimatorSpeed(animatorSpeed * sprintMultiplier);
+
+                if (currentStamina > 0)
+                {
+                    Debug.Log("Sprinting happening");
+                    totalClimbSpeed *= sprintMultiplier;
+                    currentStamina -= staminaDrainPerSec * Time.fixedDeltaTime;
+                }
+            }
+
+            else
+            {
+                SetAnimatorSpeed(animatorSpeed);
+                Debug.Log("Not Sprinting");
+                currentStamina += staminaRecoveryPerSec * Time.deltaTime;
+                if (currentStamina > maxStamina)
+                    currentStamina = maxStamina;
+            }
 
             rb.useGravity = false;
             rb.velocity = transform.up * _input.y * totalClimbSpeed + transform.right * _input.x * totalClimbSpeed;
@@ -601,13 +615,14 @@ public class sCharacterController : MonoBehaviour
     void Sprint()  // USED FOR CONTROLS
     {
 
-        isSprinting = !isSprinting;
+        isSprinting = !isSprinting;  // DONT CHANGE THIS
               
-
     }
 
     void Jump(InputAction.CallbackContext _context)  // JUMP ACTION.  FEET HAVE OTHER SCRIPT TO CHECK FOR GROUND COLLISION
     {
+
+        Vector2 input = controller.Gameplay.Movement.ReadValue<Vector2>();
 
         if (!jumpDown)
         {
@@ -619,22 +634,20 @@ public class sCharacterController : MonoBehaviour
                 if (currentState == PlayerControlState.CLIMBING)
                 {
                     isJumping = true;
-                    rb.AddForce(new Vector3(0, jumpForce, -jumpForce/2), ForceMode.Impulse);
+                    rb.AddForce(new Vector3(input.x * jumpForce, input.y * jumpForce, 0), ForceMode.Impulse);
                 }
 
-                //REGULAR JUMP
-                else
+                //REGULAR WALK JUMP
+                else if (currentState == PlayerControlState.WALKING)
                 {
                     isJumping = true;
                     rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
                 }
 
-                
-            }
-           
-
+            }        
 
         }
+
     }
 
     void CameraUpdate()
