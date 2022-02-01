@@ -13,15 +13,18 @@ public class sCharacterController : MonoBehaviour
 
     [Space]
     [Header("Movement")]
-    [SerializeField] float climbSpeed = 5f;
-    float totalClimbSpeed;
+    [SerializeField]public float climbSpeed = 5f;
+    float startingClimbSpeed;
+    //float totalClimbSpeed;
 
     float climbSlowDownAmount=0;
 
-    [SerializeField] float walkSpeed = 5f;
+    [SerializeField] public float walkSpeed = 5f;
     float startingWalkSpeed;
 
     public float sprintMultiplier = 2f;
+
+    public float speedBoostTime = 5f;
 
     [SerializeField] float jumpForce = 5f;
     bool isJumping;
@@ -86,8 +89,11 @@ public class sCharacterController : MonoBehaviour
     //Animaton shoulderRightAnimator;
     // Animaton shoulderLeftAnimator;
 
-    public Transform[] checkPoints;
-    int checkPointPos;
+    //public Transform[] checkPoints;
+    //int checkPointPos;
+
+    public Transform startingPosition;
+
     Vector3 currentCheckPointPosition;
 
     public GameObject masterPlayer;
@@ -95,11 +101,17 @@ public class sCharacterController : MonoBehaviour
     public Animator animController;
     public float animatorSpeed = 1; // DEFAULT 1
 
+    public GameObject grappleGun;
+    sGrapplingGun grappleGunBehavior;
+    public bool isGrappling;
+
+
     void Awake()
     {
 
         // SETS STARTING PLAYER POSITION TO 1st CheckPoint or StartingPoint
-        //currentCheckPointPosition = checkPoints[0];
+        currentCheckPointPosition = startingPosition.position;
+        grappleGunBehavior = grappleGun.GetComponent<sGrapplingGun>();
 
         //shoulderLeftAnimator = shoulderLeft.GetComponent<Animator>();
         //shoulderRightAnimator = shoulderRight.GetComponent<Animator>();
@@ -115,6 +127,7 @@ public class sCharacterController : MonoBehaviour
 
         controller.Gameplay.Jump.performed += Jump;
 
+        controller.Gameplay.GrappleShoot.performed += context => GrappleShoot();
 
         controller.Gameplay.Sprint.performed += context => Sprint();
         
@@ -149,6 +162,7 @@ public class sCharacterController : MonoBehaviour
         //globalPlayerReference = this;
         isOverHanging = false;
         isJumping = false;
+        isGrappling = false;
         rb = GetComponent<Rigidbody>();
         startingWalkSpeed = walkSpeed;
         currentHitPoints = maxHitPoints;
@@ -205,10 +219,10 @@ public class sCharacterController : MonoBehaviour
     }
 
     // USE THIS TO INCREMENT AND SET NEXT CHECKPOINT POS
-    void SetNewCheckPoint()
+    public void SetNewCheckPoint(Vector3 _newCheckPointPosition)
     {
-        checkPointPos++;
-        currentCheckPointPosition = checkPoints[checkPointPos].position;
+        //checkPointPos++;
+        currentCheckPointPosition = _newCheckPointPosition;
         
     }
 
@@ -285,7 +299,7 @@ public class sCharacterController : MonoBehaviour
                 }
             case PlayerControlState.FALLING:
                 {
-                    FallingMovement();
+                    FallingMovement(walkDirection);
                     break;
                 }
             case PlayerControlState.CLIMBING:
@@ -350,6 +364,9 @@ public class sCharacterController : MonoBehaviour
 
     void ClimbingMovement(Vector2 _input)
     {
+
+        float totalClimbSpeed = climbSpeed;
+
         Debug.Log("Climbing Happening");
 
         animController.SetBool("isClimbing", true);
@@ -410,8 +427,6 @@ public class sCharacterController : MonoBehaviour
 
                 // SETS SLOWDOWN AMOUNT BASED ON WALL BEHAVIOR
                 climbSlowDownAmount = wallBehavior.CheckSlowDownState();
-                //Debug.Log(wallBehavior.slip);
-
 
 
             }
@@ -436,6 +451,7 @@ public class sCharacterController : MonoBehaviour
             {
                 SetAnimatorSpeed(animatorSpeed);
                 Debug.Log("Not Sprinting");
+                
                 currentStamina += staminaRecoveryPerSec * Time.deltaTime;
                 if (currentStamina > maxStamina)
                     currentStamina = maxStamina;
@@ -597,11 +613,20 @@ public class sCharacterController : MonoBehaviour
         }
     }
 
-    void FallingMovement()
+    void FallingMovement(Vector3 _moveDirection)
     {
         Debug.Log("Falling happening");
 
         animController.SetBool("isFalling", true);
+
+       
+
+        if (_moveDirection.sqrMagnitude > 0.01f)
+        {
+
+            transform.forward = _moveDirection;
+
+        }
 
         if (jumpDown && Physics.Raycast(transform.position,
                                         transform.forward*0.8f))
@@ -667,6 +692,89 @@ public class sCharacterController : MonoBehaviour
             0.5f, mask.value, QueryTriggerInteraction.Ignore);
 
         return (hitInfo1.collider != null || hitInfo2.collider != null);
+
+    }
+
+    public void SpeedBurst(float _boostAmount)
+    {
+
+        startingClimbSpeed = climbSpeed;
+        startingWalkSpeed = walkSpeed;
+
+        climbSpeed += _boostAmount;
+        walkSpeed += _boostAmount;
+
+        StartCoroutine("SpeedUp");
+
+    }
+
+    IEnumerator SpeedUp()
+    {
+
+        Debug.Log("Speed Boost Happening!");
+
+        for (int i = 0; i < speedBoostTime; i++)
+        {
+
+            yield return new WaitForSeconds(1);
+
+        }
+
+        SpeedUpEnd();
+
+    }
+
+    void SpeedUpEnd()
+    {
+
+
+        Debug.Log("Speed Boost Off!");
+
+
+        climbSpeed = startingClimbSpeed;
+        walkSpeed = startingWalkSpeed;
+
+
+    }
+
+    public void StaminaChange(float _amount)
+    {
+
+        currentStamina += _amount;
+
+    }
+
+    public void StaminaBuff(float _time)
+    {
+
+
+
+    }
+
+    void GrappleShoot()
+    {
+        // FLIPS THE BOOL FOR PRESS AND RELEASE.  STARTS AS FALSE SO FIRST PRESS WITLL MAKE IT TRUE.
+        //isGrappling = !isGrappling;
+
+
+        if (isGrappling == false)
+        {
+
+
+            grappleGunBehavior.StartGrapple();
+            
+           
+        }
+
+        else
+        {
+
+
+            grappleGunBehavior.StopGrapple();
+            
+
+        }
+       
 
     }
 

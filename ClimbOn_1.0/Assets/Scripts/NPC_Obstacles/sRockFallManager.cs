@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class sRockFall : MonoBehaviour
+public class sRockFallManager : MonoBehaviour
 {
 
     public GameObject pRock;
 
-    public Transform rockSpawnLocation;
+    Transform rockSpawnLocation;
 
     public int minRocksToSpawn;
     public int maxRocksToSpawn;

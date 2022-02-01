@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4813379785679808912}
-  - component: {fileID: 4813379785679808915}
+  - component: {fileID: 263143731154092681}
   m_Layer: 0
   m_Name: RockSpawnManager
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4813379785679808915
+--- !u!114 &263143731154092681
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,3 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9522ea9dd5f962248a57f0aaa2cc60f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pRock: {fileID: 2778828137387636277, guid: 488ea9cfca442694bbb2be32132af958, type: 3}
+  rockSpawnLocation: {fileID: 0}
+  minRocksToSpawn: 0
+  maxRocksToSpawn: 0
+  spawnStartTime: 1
+  spawnTime: 1
+  minSpawnInterval: 50
+  maxSpawnInterval: 500

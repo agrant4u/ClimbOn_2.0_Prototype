@@ -49,6 +49,7 @@ public class sWallBehavior : MonoBehaviour
         }
 
         return currentSlowdownAmount;
+
     }
 
             

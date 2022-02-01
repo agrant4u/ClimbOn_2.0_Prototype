@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Scripts/PlayerControls.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Scripts/PlayerCharacter/PlayerControls.inputactions'
 
 using System;
 using System.Collections;
@@ -51,12 +51,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": ""Press(behavior=1)""
                 },
                 {
-                    ""name"": ""ArmRight"",
+                    ""name"": ""GrappleShoot"",
                     ""type"": ""Button"",
                     ""id"": ""7fdd21c5-ab3d-44df-b5ce-34fc1dfc4f4b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold""
+                    ""interactions"": ""Press(behavior=2)""
                 },
                 {
                     ""name"": ""LegLeft"",
@@ -173,7 +173,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ArmRight"",
+                    ""action"": ""GrappleShoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -184,7 +184,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ArmRight"",
+                    ""action"": ""GrappleShoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -342,7 +342,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Gameplay_Drop = m_Gameplay.FindAction("Drop", throwIfNotFound: true);
         m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
         m_Gameplay_SprintRelease = m_Gameplay.FindAction("SprintRelease", throwIfNotFound: true);
-        m_Gameplay_ArmRight = m_Gameplay.FindAction("ArmRight", throwIfNotFound: true);
+        m_Gameplay_GrappleShoot = m_Gameplay.FindAction("GrappleShoot", throwIfNotFound: true);
         m_Gameplay_LegLeft = m_Gameplay.FindAction("LegLeft", throwIfNotFound: true);
         m_Gameplay_LegRight = m_Gameplay.FindAction("LegRight", throwIfNotFound: true);
         m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
@@ -401,7 +401,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_Drop;
     private readonly InputAction m_Gameplay_Sprint;
     private readonly InputAction m_Gameplay_SprintRelease;
-    private readonly InputAction m_Gameplay_ArmRight;
+    private readonly InputAction m_Gameplay_GrappleShoot;
     private readonly InputAction m_Gameplay_LegLeft;
     private readonly InputAction m_Gameplay_LegRight;
     private readonly InputAction m_Gameplay_Movement;
@@ -415,7 +415,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Drop => m_Wrapper.m_Gameplay_Drop;
         public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
         public InputAction @SprintRelease => m_Wrapper.m_Gameplay_SprintRelease;
-        public InputAction @ArmRight => m_Wrapper.m_Gameplay_ArmRight;
+        public InputAction @GrappleShoot => m_Wrapper.m_Gameplay_GrappleShoot;
         public InputAction @LegLeft => m_Wrapper.m_Gameplay_LegLeft;
         public InputAction @LegRight => m_Wrapper.m_Gameplay_LegRight;
         public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
@@ -442,9 +442,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @SprintRelease.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprintRelease;
                 @SprintRelease.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprintRelease;
                 @SprintRelease.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprintRelease;
-                @ArmRight.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnArmRight;
-                @ArmRight.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnArmRight;
-                @ArmRight.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnArmRight;
+                @GrappleShoot.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrappleShoot;
+                @GrappleShoot.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrappleShoot;
+                @GrappleShoot.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrappleShoot;
                 @LegLeft.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegLeft;
                 @LegLeft.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegLeft;
                 @LegLeft.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegLeft;
@@ -476,9 +476,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @SprintRelease.started += instance.OnSprintRelease;
                 @SprintRelease.performed += instance.OnSprintRelease;
                 @SprintRelease.canceled += instance.OnSprintRelease;
-                @ArmRight.started += instance.OnArmRight;
-                @ArmRight.performed += instance.OnArmRight;
-                @ArmRight.canceled += instance.OnArmRight;
+                @GrappleShoot.started += instance.OnGrappleShoot;
+                @GrappleShoot.performed += instance.OnGrappleShoot;
+                @GrappleShoot.canceled += instance.OnGrappleShoot;
                 @LegLeft.started += instance.OnLegLeft;
                 @LegLeft.performed += instance.OnLegLeft;
                 @LegLeft.canceled += instance.OnLegLeft;
@@ -504,7 +504,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnDrop(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnSprintRelease(InputAction.CallbackContext context);
-        void OnArmRight(InputAction.CallbackContext context);
+        void OnGrappleShoot(InputAction.CallbackContext context);
         void OnLegLeft(InputAction.CallbackContext context);
         void OnLegRight(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
