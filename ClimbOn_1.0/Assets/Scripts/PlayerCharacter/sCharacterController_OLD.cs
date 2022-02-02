@@ -698,6 +698,7 @@ public class sCharacterController_OLD : MonoBehaviour
 
     void Drop(InputAction.CallbackContext context)  // DESTROYS ALL FIXED JOINTS IN LIMBS TO DROP PLAYER
     {
+
         Debug.Log("Drop");
 
         ReleaseAllHolds();

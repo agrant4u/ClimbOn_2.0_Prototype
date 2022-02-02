@@ -43,6 +43,11 @@ public class sCharacterController : MonoBehaviour
     // CINEMACHINE
     public GameObject camController;
     CinemachineFreeLook freeLookCam;
+    public Camera cam;
+
+    public GameObject reticle;
+    Transform reticleStartingPos;
+    float reticleSensitivity = 5f;
 
     Rigidbody rb;
 
@@ -112,6 +117,8 @@ public class sCharacterController : MonoBehaviour
         // SETS STARTING PLAYER POSITION TO 1st CheckPoint or StartingPoint
         currentCheckPointPosition = startingPosition.position;
         grappleGunBehavior = grappleGun.GetComponent<sGrapplingGun>();
+
+        Vector3 reticleStartingPos = reticle.transform.localPosition;
 
         //shoulderLeftAnimator = shoulderLeft.GetComponent<Animator>();
         //shoulderRightAnimator = shoulderRight.GetComponent<Animator>();
@@ -188,7 +195,7 @@ public class sCharacterController : MonoBehaviour
 
         HealthCheck();
 
-        
+        ReticleUpdate();
         
     }
 
@@ -778,6 +785,25 @@ public class sCharacterController : MonoBehaviour
 
     }
 
+    void ReticleUpdate()
+    {
+        
+        Vector2 input = controller.Gameplay.Camera.ReadValue<Vector2>();
+        //Vector3 movement = new Vector3(input.x, input.y, 0);
+        //Quaternion newRot = new Quaternion(input.x, input.y, 0);
+        Vector2 reticleMovement = new Vector2(input.x * reticleSensitivity, input.y * reticleSensitivity);
+
+        reticleMovement.Normalize();
+
+        reticle.GetComponent<Rigidbody2D>().MovePosition(reticleMovement);
+
+        reticle.transform.rotation = cam.gameObject.transform.rotation;
+
+        //reticle.transform.position = reticleStartingPos.position + movement;
+        //reticle.transform.rotation = Quaternion.identity;
+
+    }
+
     void CameraUpdate()
     {
 
@@ -788,7 +814,6 @@ public class sCharacterController : MonoBehaviour
                         * Quaternion.AngleAxis(cameraControls.y, localRight)
                         * cameraOffset;
         
-
     }
 
     void CameraFollow()
