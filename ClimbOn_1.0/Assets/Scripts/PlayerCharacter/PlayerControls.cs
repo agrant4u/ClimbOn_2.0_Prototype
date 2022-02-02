@@ -86,8 +86,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": ""Camera"",
                     ""type"": ""Value"",
                     ""id"": ""226a34a8-ce7b-42fd-9d82-1e97864b4f46"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": ""NormalizeVector2"",
+                    ""expectedControlType"": ""Stick"",
+                    ""processors"": """",
                     ""interactions"": """"
                 },
                 {
@@ -301,9 +301,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9e5f45f3-7968-4115-80e7-112d8db252de"",
-                    ""path"": ""<Gamepad>/rightStick"",
+                    ""path"": ""<XInputController>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""InvertVector2"",
                     ""groups"": """",
                     ""action"": ""Camera"",
                     ""isComposite"": false,
