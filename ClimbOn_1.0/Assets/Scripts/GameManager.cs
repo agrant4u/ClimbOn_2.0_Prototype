@@ -10,7 +10,12 @@ public enum eScene { mainMenu, inGame }
 
 public class GameManager : MonoBehaviour
 {
+    void Start()
+    {
+        
 
+
+    }
     public static GameManager gm;
 
 
@@ -24,8 +29,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-
-       
+        
         Debug.Log("sceneName to load: " + sceneName);
         SceneManager.LoadScene(sceneName);
     }
