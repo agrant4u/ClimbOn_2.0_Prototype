@@ -9,6 +9,8 @@ public class sGrapplingGun : MonoBehaviour
     public GameObject pPlayer;
     sCharacterController player;
 
+    public GameObject reticle;
+
     private LineRenderer lr;
     private Vector3 grapplingPoint;
     public LayerMask whatIsGrappleable;
@@ -18,6 +20,8 @@ public class sGrapplingGun : MonoBehaviour
     private SpringJoint joint;
 
     public float pullTime = 3f;
+
+    public float grappleLengthMultiplier = 2f;
 
 
     private void Awake()
@@ -38,10 +42,12 @@ public class sGrapplingGun : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, out hit, maxDistance, whatIsGrappleable))
+        // OLD if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, out hit, maxDistance, whatIsGrappleable))
+            if (Physics.Raycast(gameObject.transform.position, reticle.transform.forward * grappleLengthMultiplier, out hit, maxDistance, whatIsGrappleable))
             {
 
             Debug.Log("Starting Grapple Hook");
+            Debug.DrawRay(gameObject.transform.position, hit.transform.position, Color.blue);
 
             grapplingPoint = hit.point;
             player.isGrappling = true;
@@ -81,21 +87,27 @@ public class sGrapplingGun : MonoBehaviour
 
     }
 
-    public void StopGrapple()
+    public void GrappleRetract()
     {
-
-        Debug.Log("Stoping Grapple Hook");
 
         if (joint)
         {
 
+            // SMOOTH MOVES PLAYER TO GRAPPLE POINT
             player.transform.position = Vector3.Lerp(player.transform.position,
                                                    grapplingPoint,
                                                    10f);
 
             //StartCoroutine("GrappleMove");
-           
+
         }
+
+    }
+
+    public void StopGrapple()
+    {
+
+        Debug.Log("Stoping Grapple Hook");
 
         lr.positionCount = 0;
 

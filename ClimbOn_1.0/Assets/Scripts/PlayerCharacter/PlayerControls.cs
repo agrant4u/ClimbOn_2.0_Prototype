@@ -27,12 +27,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Drop"",
+                    ""name"": ""LetGo"",
                     ""type"": ""Button"",
                     ""id"": ""10d69b32-dc84-483f-a160-3c28d9fee532"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 },
                 {
                     ""name"": ""Sprint"",
@@ -67,12 +67,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": ""Hold""
                 },
                 {
-                    ""name"": ""LegRight"",
+                    ""name"": ""GrappleAim"",
                     ""type"": ""Button"",
                     ""id"": ""4b98130a-5fc7-4711-8266-b73354ae3e7f"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold""
+                    ""interactions"": ""Press(behavior=2)""
                 },
                 {
                     ""name"": ""Movement"",
@@ -91,12 +91,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Reach"",
+                    ""name"": ""GrapplePull"",
                     ""type"": ""Button"",
                     ""id"": ""27ef7427-fe71-4ca0-b7f9-a38df57a2b69"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -129,7 +129,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Drop"",
+                    ""action"": ""LetGo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -140,7 +140,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Drop"",
+                    ""action"": ""LetGo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -217,18 +217,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""LegRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d1713c32-2ea2-4fa7-bfd9-2130c10c941a"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LegRight"",
+                    ""action"": ""GrappleAim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -312,11 +301,11 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""71414fe9-0784-40a3-ab77-4362adcf475a"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Reach"",
+                    ""action"": ""GrapplePull"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -339,15 +328,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
-        m_Gameplay_Drop = m_Gameplay.FindAction("Drop", throwIfNotFound: true);
+        m_Gameplay_LetGo = m_Gameplay.FindAction("LetGo", throwIfNotFound: true);
         m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
         m_Gameplay_SprintRelease = m_Gameplay.FindAction("SprintRelease", throwIfNotFound: true);
         m_Gameplay_GrappleShoot = m_Gameplay.FindAction("GrappleShoot", throwIfNotFound: true);
         m_Gameplay_LegLeft = m_Gameplay.FindAction("LegLeft", throwIfNotFound: true);
-        m_Gameplay_LegRight = m_Gameplay.FindAction("LegRight", throwIfNotFound: true);
+        m_Gameplay_GrappleAim = m_Gameplay.FindAction("GrappleAim", throwIfNotFound: true);
         m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
         m_Gameplay_Camera = m_Gameplay.FindAction("Camera", throwIfNotFound: true);
-        m_Gameplay_Reach = m_Gameplay.FindAction("Reach", throwIfNotFound: true);
+        m_Gameplay_GrapplePull = m_Gameplay.FindAction("GrapplePull", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -398,29 +387,29 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Gameplay;
     private IGameplayActions m_GameplayActionsCallbackInterface;
     private readonly InputAction m_Gameplay_Jump;
-    private readonly InputAction m_Gameplay_Drop;
+    private readonly InputAction m_Gameplay_LetGo;
     private readonly InputAction m_Gameplay_Sprint;
     private readonly InputAction m_Gameplay_SprintRelease;
     private readonly InputAction m_Gameplay_GrappleShoot;
     private readonly InputAction m_Gameplay_LegLeft;
-    private readonly InputAction m_Gameplay_LegRight;
+    private readonly InputAction m_Gameplay_GrappleAim;
     private readonly InputAction m_Gameplay_Movement;
     private readonly InputAction m_Gameplay_Camera;
-    private readonly InputAction m_Gameplay_Reach;
+    private readonly InputAction m_Gameplay_GrapplePull;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
         public GameplayActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
-        public InputAction @Drop => m_Wrapper.m_Gameplay_Drop;
+        public InputAction @LetGo => m_Wrapper.m_Gameplay_LetGo;
         public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
         public InputAction @SprintRelease => m_Wrapper.m_Gameplay_SprintRelease;
         public InputAction @GrappleShoot => m_Wrapper.m_Gameplay_GrappleShoot;
         public InputAction @LegLeft => m_Wrapper.m_Gameplay_LegLeft;
-        public InputAction @LegRight => m_Wrapper.m_Gameplay_LegRight;
+        public InputAction @GrappleAim => m_Wrapper.m_Gameplay_GrappleAim;
         public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
         public InputAction @Camera => m_Wrapper.m_Gameplay_Camera;
-        public InputAction @Reach => m_Wrapper.m_Gameplay_Reach;
+        public InputAction @GrapplePull => m_Wrapper.m_Gameplay_GrapplePull;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -433,9 +422,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
-                @Drop.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDrop;
-                @Drop.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDrop;
-                @Drop.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnDrop;
+                @LetGo.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLetGo;
+                @LetGo.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLetGo;
+                @LetGo.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLetGo;
                 @Sprint.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSprint;
@@ -448,18 +437,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @LegLeft.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegLeft;
                 @LegLeft.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegLeft;
                 @LegLeft.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegLeft;
-                @LegRight.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegRight;
-                @LegRight.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegRight;
-                @LegRight.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLegRight;
+                @GrappleAim.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrappleAim;
+                @GrappleAim.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrappleAim;
+                @GrappleAim.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrappleAim;
                 @Movement.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMovement;
                 @Camera.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamera;
                 @Camera.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamera;
                 @Camera.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnCamera;
-                @Reach.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnReach;
-                @Reach.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnReach;
-                @Reach.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnReach;
+                @GrapplePull.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrapplePull;
+                @GrapplePull.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrapplePull;
+                @GrapplePull.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnGrapplePull;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -467,9 +456,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
-                @Drop.started += instance.OnDrop;
-                @Drop.performed += instance.OnDrop;
-                @Drop.canceled += instance.OnDrop;
+                @LetGo.started += instance.OnLetGo;
+                @LetGo.performed += instance.OnLetGo;
+                @LetGo.canceled += instance.OnLetGo;
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
@@ -482,18 +471,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @LegLeft.started += instance.OnLegLeft;
                 @LegLeft.performed += instance.OnLegLeft;
                 @LegLeft.canceled += instance.OnLegLeft;
-                @LegRight.started += instance.OnLegRight;
-                @LegRight.performed += instance.OnLegRight;
-                @LegRight.canceled += instance.OnLegRight;
+                @GrappleAim.started += instance.OnGrappleAim;
+                @GrappleAim.performed += instance.OnGrappleAim;
+                @GrappleAim.canceled += instance.OnGrappleAim;
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
                 @Camera.started += instance.OnCamera;
                 @Camera.performed += instance.OnCamera;
                 @Camera.canceled += instance.OnCamera;
-                @Reach.started += instance.OnReach;
-                @Reach.performed += instance.OnReach;
-                @Reach.canceled += instance.OnReach;
+                @GrapplePull.started += instance.OnGrapplePull;
+                @GrapplePull.performed += instance.OnGrapplePull;
+                @GrapplePull.canceled += instance.OnGrapplePull;
             }
         }
     }
@@ -501,14 +490,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     public interface IGameplayActions
     {
         void OnJump(InputAction.CallbackContext context);
-        void OnDrop(InputAction.CallbackContext context);
+        void OnLetGo(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnSprintRelease(InputAction.CallbackContext context);
         void OnGrappleShoot(InputAction.CallbackContext context);
         void OnLegLeft(InputAction.CallbackContext context);
-        void OnLegRight(InputAction.CallbackContext context);
+        void OnGrappleAim(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnCamera(InputAction.CallbackContext context);
-        void OnReach(InputAction.CallbackContext context);
+        void OnGrapplePull(InputAction.CallbackContext context);
     }
 }

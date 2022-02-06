@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 
-public enum PlayerControlState { CLIMBING, WALKING, FALLING, OVERHANGING, LEDGE,  }
+public enum PlayerControlState { CLIMBING, WALKING, FALLING, OVERHANGING, LEDGE }
 
 public class sCharacterController : MonoBehaviour
 {
@@ -45,10 +45,6 @@ public class sCharacterController : MonoBehaviour
     CinemachineFreeLook freeLookCam;
     public Camera cam;
 
-    public GameObject reticle;
-    Transform reticleStartingPos;
-    float reticleSensitivity = 5f;
-
     Rigidbody rb;
 
     [Space]
@@ -59,6 +55,8 @@ public class sCharacterController : MonoBehaviour
     float v = 0f;
 
     bool jumpDown = false;
+
+    public float maxFallVelocity = 20f;
 
     Vector3 velo;
 
@@ -108,8 +106,15 @@ public class sCharacterController : MonoBehaviour
 
     public GameObject grappleGun;
     sGrapplingGun grappleGunBehavior;
+    bool isAimingGrapple;
+    bool isRetractingGrapple = false;
     public bool isGrappling;
 
+    public GameObject reticle;
+    Vector3 reticleStartingPos;
+    float reticleSensitivity = 5f;
+
+    bool canMantle = false;
 
     void Awake()
     {
@@ -118,12 +123,7 @@ public class sCharacterController : MonoBehaviour
         currentCheckPointPosition = startingPosition.position;
         grappleGunBehavior = grappleGun.GetComponent<sGrapplingGun>();
 
-        Vector3 reticleStartingPos = reticle.transform.localPosition;
-
-        //shoulderLeftAnimator = shoulderLeft.GetComponent<Animator>();
-        //shoulderRightAnimator = shoulderRight.GetComponent<Animator>();
-
-        //shoulderLeftAnimator.
+        reticleStartingPos = reticle.transform.localPosition;
 
         controller = new PlayerControls();
 
@@ -134,27 +134,20 @@ public class sCharacterController : MonoBehaviour
 
         controller.Gameplay.Jump.performed += Jump;
 
+        controller.Gameplay.GrappleAim.performed += context => isAimingGrapple = !isAimingGrapple;
         controller.Gameplay.GrappleShoot.performed += context => GrappleShoot();
+        controller.Gameplay.GrapplePull.performed += context => GrapplePull();
 
         controller.Gameplay.Sprint.performed += context => Sprint();
-        
-
-        //controller.Gameplay.Sprint.canceled += NotSprinting;
-        
-        //controller.Gameplay.Sprint.
-
-        //controller.Gameplay.Drop.performed += Drop;
-
-        //controller.Gameplay.ArmRight.started += MoveRightArm;
-        //controller.Gameplay.ArmRight.canceled += context => isLimbMoving = false;
 
         
+        
+     
 
     }
 
     private void OnEnable()
     {
-
         controller.Gameplay.Enable();
     }
 
@@ -170,6 +163,7 @@ public class sCharacterController : MonoBehaviour
         isOverHanging = false;
         isJumping = false;
         isGrappling = false;
+        isAimingGrapple = false;
         rb = GetComponent<Rigidbody>();
         startingWalkSpeed = walkSpeed;
         currentHitPoints = maxHitPoints;
@@ -184,14 +178,16 @@ public class sCharacterController : MonoBehaviour
         //CameraUpdate();
 
         // INPUT PER FRAME HERE
-        Vector2 movement = controller.Gameplay.Movement.ReadValue<Vector2>();
-        h = movement.x;
-        v = movement.y;
+        //Vector2 movement = controller.Gameplay.Movement.ReadValue<Vector2>();
+        //h = movement.x;
+        //v = movement.y;
 
         if (!jumpDown)
         {
-            jumpDown = controller.Gameplay.Jump.triggered;
+            //jumpDown = controller.Gameplay.Jump.triggered;
         }
+
+        FallCheck();
 
         HealthCheck();
 
@@ -246,30 +242,141 @@ public class sCharacterController : MonoBehaviour
     }
 
     // NEEDS WORK!
-    IEnumerator FallCheck()
+    void FallCheck()
     {
 
-        Vector3 currentPos = gameObject.transform.position;
-        Vector3 oldPos = currentPos;
+        if (maxFallVelocity <= -10)
+        {
+            Debug.Log("Fall Death!");
+            sCharacterController.isDead = true;
 
-        for (int i = 0; i < 10; i++)
-        { 
+        }
+       
 
-            currentPos = gameObject.transform.position;
-            float difference = currentPos.y - oldPos.y;
+    }
 
-            // CHECKS FOR FALL DEATH
-            if (difference >= fallKillDistance)
+    void GroundCheck()
+    {
+
+
+
+        // CHECKS FOR HIT DIRECTLY BELOW CHARACTER
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position,
+                            Vector3.down,
+                            out hit,
+                            1.02f))
+        {
+            Debug.DrawRay(transform.position, Vector3.down, Color.red);
+            Debug.Log("Raycast Hit below");
+
+            if (isJumping && rb.velocity.y == 0)
             {
-                sCharacterController.isDead = true;
+
+                FallCheck();
+
             }
 
-            yield return new WaitForSeconds(0.2f);
+            else if (isJumping)
+            {
+                if (rb.velocity.y < maxFallVelocity)
+                {
+                    maxFallVelocity = rb.velocity.y;
+                }
+            }
+
+            currentState = PlayerControlState.WALKING;
+            isJumping = false;
+            isOverHanging = false;
+        }
+
+        else if (currentState != PlayerControlState.CLIMBING && !isJumping)
+        {
+            currentState = PlayerControlState.FALLING;
+        }
+
+        else
+        {
+
+            //currentState = PlayerControlState.FALLING;
 
         }
 
+    }
+
+    void CeilingCheck()
+    {
+
+        RaycastHit hit;
+        // CHECKS FOR HIT ABOVE CHARACTER
+        if (Physics.Raycast(transform.position,
+                         Vector3.up,
+                         out hit, 1.02f))
+        {
+            Debug.DrawRay(transform.position, Vector3.up, Color.green);
+            Debug.Log("Raycast Hit above");
+
+            currentState = PlayerControlState.OVERHANGING;
+            isOverHanging = true;
+
+
+        }
+
+        else
+        {
+            //currentState = PlayerControlState.FALLING;
+            isOverHanging = false;
+            rb.useGravity = true;
+        }
+
+
+    }
+
+    void MantleCheck()
+    {
+
+        RaycastHit hit1;
+        // CHECKS FOR HIT ABOVE AND IN FRONT OF CHARACTER
+        if (Physics.Raycast(transform.position,
+                         Vector3.up + Vector3.forward,
+                         out hit1, 1.02f))
+        {
+            Debug.DrawRay(transform.position, Vector3.up+Vector3.forward, Color.cyan);
+            Debug.Log("Raycast Hit Ledge");
+
+            Vector3 mantleOffset = new Vector3(0, 1.5f, 0);
+
+            RaycastHit hit2;
+            // CHECKS FOR HIT ABOVE AND IN FRONT OF CHARACTER FOR LEDGE TO GRAB
+            if (Physics.Raycast(transform.position + mantleOffset,
+                             Vector3.forward,
+                             out hit2, 1.02f))
+            {
+                Debug.DrawRay(transform.position + mantleOffset, Vector3.forward, Color.red);
+                Debug.Log("Raycast Hit Mantle Spot");
+
+                canMantle = true;
+
+
+            }
+
+            else
+            {
+
+                canMantle = true;
+
+                // CHECK FOR MANTLE INPUT HERE?
+            }
+
+        }
         
 
+        else
+        {
+
+
+
+        }
 
     }
 
@@ -322,45 +429,10 @@ public class sCharacterController : MonoBehaviour
                 }
         }
 
-        // CHECKS FOR HIT DIRECTLY BELOW CHARACTER
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position,
-                            Vector3.down,
-                            out hit,
-                            1.02f))
-        {
-            Debug.Log("Raycast Hit below");
+        GroundCheck();
+        CeilingCheck();
+        MantleCheck();
 
-            currentState = PlayerControlState.WALKING;
-            isJumping = false;
-            isOverHanging = false;
-        }
-
-        else if (currentState == PlayerControlState.WALKING)
-        {
-            currentState = PlayerControlState.FALLING;
-        }
-
-        // CHECKS FOR HIT ABOVE CHARACTER
-        if (Physics.Raycast(transform.position,
-                         Vector3.up,
-                         out hit, 1.02f))
-        {
-
-            Debug.Log("Raycast Hit above");
-
-            currentState = PlayerControlState.OVERHANGING;
-            isOverHanging = true;
-            
-            
-        }
-
-        else
-        {
-            //currentState = PlayerControlState.FALLING;
-            isOverHanging = false;
-            rb.useGravity = true;
-        }
 
         //rb.useGravity = currentState != PlayerControlState.CLIMBING;
 
@@ -393,6 +465,7 @@ public class sCharacterController : MonoBehaviour
                                 transform.forward,
                                 out checkHit))
             {
+                Debug.DrawRay(gameObject.transform.position + offset, transform.forward, Color.yellow);
 
                 checkDirection += checkHit.normal;
                 k++;
@@ -410,6 +483,8 @@ public class sCharacterController : MonoBehaviour
                             -checkDirection,  // DIRECTION
                             out hit)) // HIT DATA
         {
+
+            Debug.DrawRay(transform.position, -hit.transform.position, Color.blue);
 
             float dot = Vector3.Dot(transform.forward, -hit.normal);
 
@@ -499,16 +574,18 @@ public class sCharacterController : MonoBehaviour
                             out hit)) // HIT DATA
         {
 
+            Debug.DrawRay(gameObject.transform.position, Vector3.up, Color.blue);
+
             //float dot = Vector3.Dot(transform.forward, -hit.normal);
 
 
             // SMOOTHES MOVEMENT ALONG THE WALL TO CURVE AROUND
             //transform.forward = -hit.normal;
-            
+
             //rb.position = Vector3.Lerp(rb.position,
-              //                        hit.normal,
-                //                      Time.fixedDeltaTime);
-            
+            //                        hit.normal,
+            //                      Time.fixedDeltaTime);
+
 
             transform.up = Vector3.Lerp(transform.up,
                                              -hit.normal,
@@ -655,6 +732,7 @@ public class sCharacterController : MonoBehaviour
     {
 
         Vector2 input = controller.Gameplay.Movement.ReadValue<Vector2>();
+        Vector3 movement = new Vector3(input.x, input.y, 0);
 
         if (!jumpDown)
         {
@@ -666,7 +744,7 @@ public class sCharacterController : MonoBehaviour
                 if (currentState == PlayerControlState.CLIMBING)
                 {
                     isJumping = true;
-                    rb.AddForce(new Vector3(input.x * jumpForce, input.y * jumpForce, 0), ForceMode.Impulse);
+                    rb.AddForce(new Vector3(jumpForce, jumpForce, 0), ForceMode.Impulse);
                 }
 
                 //REGULAR WALK JUMP
@@ -676,12 +754,30 @@ public class sCharacterController : MonoBehaviour
                     rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
                 }
 
+                maxFallVelocity = 0;
+
+                //StartCoroutine("JumpMovement");
+
             }        
 
         }
 
     }
 
+
+    public void GrapplePull()
+    {
+
+        if (isGrappling)
+        {
+
+            grappleGun.GetComponent<sGrapplingGun>().GrappleRetract();
+
+        }
+
+    }
+
+    // NEESD IMPLEMENTATION
     private bool isFacingWall()
     {
         //TODO: set angle threshold on wall facing
@@ -788,19 +884,36 @@ public class sCharacterController : MonoBehaviour
     void ReticleUpdate()
     {
         
-        Vector2 input = controller.Gameplay.Camera.ReadValue<Vector2>();
-        //Vector3 movement = new Vector3(input.x, input.y, 0);
-        //Quaternion newRot = new Quaternion(input.x, input.y, 0);
-        Vector2 reticleMovement = new Vector2(input.x * reticleSensitivity, input.y * reticleSensitivity);
+        if (isAimingGrapple)
+        {
+            reticle.SetActive(true);
 
-        reticleMovement.Normalize();
+            Vector2 input = controller.Gameplay.Camera.ReadValue<Vector2>();
+            Vector3 movement = new Vector3(input.x, input.y, 0);
+            //Quaternion newRot = new Quaternion(input.x, input.y, 0);
+            Vector2 reticleMovement = new Vector2(input.x * reticleSensitivity, input.y * reticleSensitivity);
 
-        reticle.GetComponent<Rigidbody2D>().MovePosition(reticleMovement);
+            movement.Normalize();
+            reticleMovement.Normalize();
 
-        reticle.transform.rotation = cam.gameObject.transform.rotation;
+            //reticle.GetComponent<Rigidbody2D>().MovePosition(reticleMovement);
 
-        //reticle.transform.position = reticleStartingPos.position + movement;
-        //reticle.transform.rotation = Quaternion.identity;
+
+            //reticle.transform.rotation = cam.gameObject.transform.rotation;
+
+            //reticle.transform.rotation = Quaternion.AngleAxis(cam.transform.rotation.y, gameObject.transform.position);
+
+            //reticle.transform.RotateAround(cam.transform.position, )
+
+            reticle.transform.localPosition = reticleStartingPos + movement;
+
+            //reticle.transform.rotation = Quaternion.identity;
+        }
+
+        else
+        {
+            reticle.SetActive(false);
+        }
 
     }
 

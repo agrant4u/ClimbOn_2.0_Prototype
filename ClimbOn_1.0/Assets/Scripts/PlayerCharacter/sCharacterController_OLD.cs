@@ -581,13 +581,7 @@ public class sCharacterController_OLD : MonoBehaviour
 
                 //limbToControl.transform.localPosition = (movement + tempStartingPos);
 
-                if (controller.Gameplay.Reach.triggered)
-                {
-                    // REACH FOR HOLD CODE!
-
-
-
-                }
+                
 
 
 
