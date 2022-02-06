@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e107e52fd99668d408c6ba41de20b702, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rockFallForce: 200
-  rockKnockdownForce: 1000
-  fallOffset: 0.15
-  fallTime: 5
+  rockFallForce: 10
+  rockKnockdownForce: 100
+  fallOffset: 0.25
+  fallTime: 2

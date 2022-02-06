@@ -103,7 +103,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7c270392-d733-45d4-9a74-9896bee0b59a"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -125,7 +125,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""590da265-ed56-44a2-a64a-e751a9cd7df6"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -303,7 +303,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""id"": ""9e5f45f3-7968-4115-80e7-112d8db252de"",
                     ""path"": ""<XInputController>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": ""InvertVector2"",
+                    ""processors"": ""InvertVector2(invertY=false)"",
                     ""groups"": """",
                     ""action"": ""Camera"",
                     ""isComposite"": false,

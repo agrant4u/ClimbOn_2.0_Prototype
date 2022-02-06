@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class sRockBehavior : MonoBehaviour
 {
-    public int rockFallPower = 10;
+    public int rockFallPower = 100;
 
     private void OnCollisionEnter(Collision collision)
     {

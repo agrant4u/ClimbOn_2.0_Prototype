@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 63886152703907867}
   - component: {fileID: 1585010700128355319}
   - component: {fileID: 1543953650714890332}
+  - component: {fileID: 4370246489351814072}
   m_Layer: 0
   m_Name: 20x20StartingCube
   m_TagString: Untagged
@@ -342,3 +343,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &4370246489351814072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7811488982538247844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b8884b30c58ac4599abf9042b86549, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slip: 20
+  currentSlowDownState: 0

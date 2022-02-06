@@ -681,7 +681,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.3198528, y: 1}
+    m_SensorSize: {x: 1.3333334, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -6755,7 +6755,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh27116
+  m_Name: pb_Mesh30732
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8625,7 +8625,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.3198528, y: 1}
+    m_SensorSize: {x: 1.3333334, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -9208,7 +9208,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.3198528, y: 1}
+    m_SensorSize: {x: 1.3333334, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -15803,7 +15803,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.3198528, y: 1}
+    m_SensorSize: {x: 1.3333334, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -16427,9 +16427,12 @@ MonoBehaviour:
   climbSpeed: 7
   walkSpeed: 10
   sprintMultiplier: 2
+  speedBoostTime: 5
   jumpForce: 7
   cameraTarget: {fileID: 1356725140}
   camController: {fileID: 1250526353}
+  cam: {fileID: 0}
+  reticle: {fileID: 0}
   currentState: 1
   maxHitPoints: 100
   fallKillDistance: 10
@@ -16437,10 +16440,12 @@ MonoBehaviour:
   staminaRecoveryPerSec: 2
   staminaClimbDrainPerSec: 5
   staminaClimbRecoveryPerSec: 2
-  checkPoints: []
+  startingPosition: {fileID: 0}
   masterPlayer: {fileID: 34112943}
   animController: {fileID: 34112945}
   animatorSpeed: 3
+  grappleGun: {fileID: 0}
+  isGrappling: 0
 --- !u!43 &1365239458
 Mesh:
   m_ObjectHideFlags: 0
