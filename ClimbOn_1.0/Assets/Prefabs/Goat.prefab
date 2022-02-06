@@ -1680,6 +1680,7 @@ GameObject:
   - component: {fileID: 179099640070656374}
   - component: {fileID: 179099640070656370}
   - component: {fileID: 179099640070656371}
+  - component: {fileID: 419273701719156898}
   m_Layer: 0
   m_Name: Goat
   m_TagString: Untagged
@@ -1695,8 +1696,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 179099640070656373}
   m_LocalRotation: {x: -0.70710576, y: -0, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: -2.3105, y: 2.47, z: -31.2}
-  m_LocalScale: {x: 0.8746156, y: 0.95335215, z: 0.96323806}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 179099639875151833}
   - {fileID: 179099639198199278}
@@ -1783,7 +1784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dedefb8fa83e29248adad44740e6d908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buckForce: 20
+  buckForce: 50
   countDown: 5
 --- !u!54 &179099640070656371
 Rigidbody:
@@ -1801,6 +1802,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!95 &419273701719156898
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179099640070656373}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 62d733d3b6124bd48bd7588a2b73ee75, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2194581671386692824
 GameObject:
   m_ObjectHideFlags: 0
