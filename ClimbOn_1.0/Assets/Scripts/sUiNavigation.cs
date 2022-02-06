@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class sUiNavigation : MonoBehaviour
 {
+
+    
     
     public void OnPlayButtonPressed()
     {
@@ -12,7 +14,7 @@ public class sUiNavigation : MonoBehaviour
         //add a move to new scene code
         Destroy(this.gameObject);
 
-        GameManager.gm.LoadScene("ClimbOn_3.0");
+        GameManager.gm.LoadScene(eScene.inGame);
 
     }
 

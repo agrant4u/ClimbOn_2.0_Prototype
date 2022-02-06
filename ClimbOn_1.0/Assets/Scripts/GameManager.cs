@@ -10,12 +10,7 @@ public enum eScene { mainMenu, inGame }
 
 public class GameManager : MonoBehaviour
 {
-    void Start()
-    {
-        
 
-
-    }
     public static GameManager gm;
 
 
@@ -27,11 +22,82 @@ public class GameManager : MonoBehaviour
 
 
 
-    public void LoadScene(string sceneName)
+    private void Awake()
+    {
+
+        if (gm == null)
+        {
+
+            DontDestroyOnLoad(this.gameObject);
+            gm = this;
+
+        }
+
+        else if (gm != this)
+        {
+
+            Destroy(gameObject);
+
+        }
+    }
+
+
+        void Start()
+        {
+
+
+        if (curScene == eScene.mainMenu)
+        {
+            
+
+            
+        }
+
+        if (curScene == eScene.inGame)
+        {
+
+
+
+        }
+
+
+        }
+    
+
+
+
+    public void LoadScene(eScene _newScene)
     {
         
-        Debug.Log("sceneName to load: " + sceneName);
-        SceneManager.LoadScene(sceneName);
+        Debug.Log("sceneName to load: " + _newScene);
+
+        SceneManager.LoadScene((int)_newScene);
+
+
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentScene = scene.buildIndex;
+        curScene = (eScene)currentScene;
+
+        Debug.Log("Scene has loaded: " + curScene);
+
+        switch (curScene)
+        {
+            case eScene.mainMenu:
+
+                //CreateMainMenu();
+
+                break;
+
+            case eScene.inGame:
+
+                break;
+
+                // CAMERA SETUP
+        }
+ 
     }
 
 
