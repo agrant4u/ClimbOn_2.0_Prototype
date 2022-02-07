@@ -16,12 +16,17 @@ public class sGrapplingGun : MonoBehaviour
     public LayerMask whatIsGrappleable;
 
     public Transform gunTip, playerPos;
-    private float maxDistance = 100f;
+    private float maxDistance = 500f;
     private SpringJoint joint;
 
     public float pullTime = 3f;
 
     public float grappleLengthMultiplier = 2f;
+
+    public float grappleSpring = 4.5f;
+    public float grappleDamper = 7f;
+    public float grappleMassScale = 4.5f;
+
 
 
     private void Awake()
@@ -63,9 +68,9 @@ public class sGrapplingGun : MonoBehaviour
             joint.minDistance = distanceFromPoint * 0.25f;
 
             // CHANGE THESE UP TO FEEL RIGHT
-            joint.spring = 4.5f;  //pull /push
-            joint.damper = 7f;
-            joint.massScale = 4.5f;
+            joint.spring = grappleSpring;  //pull /push
+            joint.damper = grappleDamper;
+            joint.massScale = grappleMassScale;
 
             lr.positionCount = 2;
 
