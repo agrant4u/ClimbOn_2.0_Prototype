@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 
-public enum PlayerControlState { CLIMBING, WALKING, FALLING, OVERHANGING, LEDGE }
+public enum ePlayerControlState { CLIMBING, WALKING, FALLING, OVERHANGING, LEDGE }
 
 public class sCharacterController : MonoBehaviour
 {
@@ -49,7 +49,7 @@ public class sCharacterController : MonoBehaviour
 
     [Space]
     [Header("Player State")]
-    [SerializeField] public PlayerControlState currentState = PlayerControlState.WALKING;
+    [SerializeField] public ePlayerControlState currentState = ePlayerControlState.WALKING;
 
     float h = 0f;
     float v = 0f;
@@ -84,6 +84,11 @@ public class sCharacterController : MonoBehaviour
     public float staminaClimbDrainPerSec = 5;
     public float staminaClimbRecoveryPerSec = 2;
 
+
+    bool canMantle = false;
+    bool attempingMantle;
+    public float mantleSpeed = 1f;
+
     //public static sCharacterController globalPlayerReference;
 
     //public GameObject shoulderRight;
@@ -101,6 +106,12 @@ public class sCharacterController : MonoBehaviour
 
     public GameObject masterPlayer;
 
+    public GameObject umbrella;
+    Vector3 umbrellaGravityReductionForce;
+    public float umbrellaFloatForce = 10;
+    bool isHoldingUmbrella;
+    Vector3 normalGravity;
+
     public Animator animController;
     public float animatorSpeed = 1; // DEFAULT 1
 
@@ -114,7 +125,9 @@ public class sCharacterController : MonoBehaviour
     Vector3 reticleStartingPos;
     float reticleSensitivity = 5f;
 
-    bool canMantle = false;
+
+    public static int collectiblesHeld = 0;
+    public static int totalCollectibles = 3;
 
     void Awake()
     {
@@ -124,6 +137,11 @@ public class sCharacterController : MonoBehaviour
         grappleGunBehavior = grappleGun.GetComponent<sGrapplingGun>();
 
         reticleStartingPos = reticle.transform.localPosition;
+
+        normalGravity = Physics.gravity;
+        umbrella.SetActive(false);
+        isHoldingUmbrella = false;
+        umbrellaGravityReductionForce = new Vector3(0, umbrellaFloatForce, 0);
 
         controller = new PlayerControls();
 
@@ -138,9 +156,11 @@ public class sCharacterController : MonoBehaviour
         controller.Gameplay.GrappleShoot.performed += context => GrappleShoot();
         controller.Gameplay.GrapplePull.performed += context => GrapplePull();
 
+        controller.Gameplay.Umbrella.performed += context => ToggleUmbrella();
+
         controller.Gameplay.Sprint.performed += context => Sprint();
 
-        
+        controller.Gameplay.Mantle.performed += context => attempingMantle = !attempingMantle;
         
      
 
@@ -164,6 +184,7 @@ public class sCharacterController : MonoBehaviour
         isJumping = false;
         isGrappling = false;
         isAimingGrapple = false;
+        attempingMantle = false;
         rb = GetComponent<Rigidbody>();
         startingWalkSpeed = walkSpeed;
         currentHitPoints = maxHitPoints;
@@ -192,6 +213,7 @@ public class sCharacterController : MonoBehaviour
         HealthCheck();
 
         ReticleUpdate();
+
         
     }
 
@@ -215,7 +237,7 @@ public class sCharacterController : MonoBehaviour
         
         if (collision.gameObject.CompareTag("Hold"))
         {
-            currentState = PlayerControlState.CLIMBING;
+            currentState = ePlayerControlState.CLIMBING;
            
         }
 
@@ -285,14 +307,14 @@ public class sCharacterController : MonoBehaviour
                 }
             }
 
-            currentState = PlayerControlState.WALKING;
+            currentState = ePlayerControlState.WALKING;
             isJumping = false;
             isOverHanging = false;
         }
 
-        else if (currentState != PlayerControlState.CLIMBING && !isJumping)
+        else if (currentState != ePlayerControlState.CLIMBING && !isJumping)
         {
-            currentState = PlayerControlState.FALLING;
+            currentState = ePlayerControlState.FALLING;
         }
 
         else
@@ -316,7 +338,7 @@ public class sCharacterController : MonoBehaviour
             Debug.DrawRay(transform.position, Vector3.up, Color.green);
             Debug.Log("Raycast Hit above");
 
-            currentState = PlayerControlState.OVERHANGING;
+            currentState = ePlayerControlState.OVERHANGING;
             isOverHanging = true;
 
 
@@ -334,49 +356,80 @@ public class sCharacterController : MonoBehaviour
 
     void MantleCheck()
     {
+        Vector3 mantlePos;
+        //FIRST CHECKS FOR A HIT AT WAIST LEVEL
+        RaycastHit frontHit;
 
-        RaycastHit hit1;
-        // CHECKS FOR HIT ABOVE AND IN FRONT OF CHARACTER
-        if (Physics.Raycast(transform.position,
-                         Vector3.up + Vector3.forward,
-                         out hit1, 1.02f))
+        if (Physics.Raycast(transform.position, Vector3.forward, out frontHit, 1.02f))
         {
-            Debug.DrawRay(transform.position, Vector3.up+Vector3.forward, Color.cyan);
-            Debug.Log("Raycast Hit Ledge");
+            Debug.Log("Raycast Hit at chest level");
+            Debug.DrawRay(transform.position, Vector3.forward, Color.red);
 
-            Vector3 mantleOffset = new Vector3(0, 1.5f, 0);
+            RaycastHit hit1;
 
-            RaycastHit hit2;
-            // CHECKS FOR HIT ABOVE AND IN FRONT OF CHARACTER FOR LEDGE TO GRAB
-            if (Physics.Raycast(transform.position + mantleOffset,
-                             Vector3.forward,
-                             out hit2, 1.02f))
+            // CHECKS FOR HIT ABOVE AND IN FRONT OF CHARACTER
+            if (Physics.Raycast(transform.position,
+                             Vector3.up + Vector3.forward,
+                             out hit1, 1.02f))
             {
-                Debug.DrawRay(transform.position + mantleOffset, Vector3.forward, Color.red);
-                Debug.Log("Raycast Hit Mantle Spot");
+                Debug.DrawRay(transform.position, Vector3.up + Vector3.forward, Color.cyan);
+                Debug.Log("Raycast Hit Ledge");
 
-                canMantle = true;
+                Vector3 mantleOffset = new Vector3(0, 1.5f, 0);
+                RaycastHit hit2;
 
+                // CHECKS FOR HIT ABOVE AND IN FRONT OF CHARACTER FOR LEDGE TO GRAB
+                if (Physics.Raycast(transform.position + mantleOffset,
+                                 Vector3.forward,
+                                 out hit2, 1.02f))
+                {
+                    Debug.DrawRay(transform.position + mantleOffset, Vector3.forward, Color.red);
+                    Debug.Log("Raycast Hit spot to mantle to");
+
+                    // HIT AT SPOT which means character can't mantle cause theres a wall
+                    canMantle = false;
+
+
+                }
+
+                else
+                {
+                    mantlePos = transform.localPosition + mantleOffset + Vector3.forward;
+                    canMantle = true;
+                    // CHECKS FOR MANTLE INPUT HERE
+                    if (attempingMantle)
+                    {
+                        Debug.Log("Mantle attempt!");
+                        MantleMove(mantlePos);
+                    }
+                }
 
             }
+
 
             else
             {
+                //mantlePos = Vector3.forward + Vector3.up;
 
-                canMantle = true;
+                mantlePos = transform.localPosition + Vector3.up + Vector3.forward;
 
-                // CHECK FOR MANTLE INPUT HERE?
+                if (attempingMantle)
+                {
+                    Debug.Log("Mantle attempt!");
+                    MantleMove(mantlePos);
+                }
+
             }
 
-        }
-        
+        }     
 
-        else
-        {
+    }
 
-
-
-        }
+    void MantleMove(Vector3 _spotToMove)
+    {
+        Vector3 offset = new Vector3(0, 2f, 0);
+        Debug.Log("Mantling from " + transform.localPosition + " to " + (_spotToMove + offset));
+        transform.localPosition = Vector3.Lerp(transform.localPosition, _spotToMove + offset, 100f * Time.fixedDeltaTime);
 
     }
 
@@ -406,22 +459,22 @@ public class sCharacterController : MonoBehaviour
         // MOVEMENT STATE TRANSITIONS
         switch (currentState)
         {
-            case PlayerControlState.WALKING:
+            case ePlayerControlState.WALKING:
                 {
                     WalkingMovement(walkDirection);
                     break;
                 }
-            case PlayerControlState.FALLING:
+            case ePlayerControlState.FALLING:
                 {
                     FallingMovement(walkDirection);
                     break;
                 }
-            case PlayerControlState.CLIMBING:
+            case ePlayerControlState.CLIMBING:
                 {                   
                     ClimbingMovement(input);
                     break;
                 }
-            case PlayerControlState.OVERHANGING:
+            case ePlayerControlState.OVERHANGING:
                 {
                     if (isOverHanging)
                     OverHangMovement(walkDirection);
@@ -431,7 +484,7 @@ public class sCharacterController : MonoBehaviour
 
         GroundCheck();
         CeilingCheck();
-        MantleCheck();
+        
 
 
         //rb.useGravity = currentState != PlayerControlState.CLIMBING;
@@ -545,13 +598,13 @@ public class sCharacterController : MonoBehaviour
             if (jumpDown)
             {
                 rb.velocity = Vector3.up * 5f + hit.normal * 2f;
-                currentState = PlayerControlState.FALLING;
+                currentState = ePlayerControlState.FALLING;
             }
         }
 
         else
         {
-            currentState = PlayerControlState.FALLING;
+            currentState = ePlayerControlState.FALLING;
             rb.useGravity = true;
         }
     }
@@ -650,6 +703,8 @@ public class sCharacterController : MonoBehaviour
         animController.SetBool("isClimbing", false);
         animController.SetBool("isFalling", false);
 
+        MantleCheck();
+
         float totalWalkSpeed = walkSpeed;
 
         if (isSprinting)
@@ -684,7 +739,7 @@ public class sCharacterController : MonoBehaviour
         {
 
             newVelo.y = 5f;
-            currentState = PlayerControlState.FALLING;
+            currentState = ePlayerControlState.FALLING;
         }
 
         rb.velocity = newVelo;
@@ -715,7 +770,7 @@ public class sCharacterController : MonoBehaviour
         if (jumpDown && Physics.Raycast(transform.position,
                                         transform.forward*0.8f))
         {
-            currentState = PlayerControlState.CLIMBING;
+            currentState = ePlayerControlState.CLIMBING;
             animController.SetBool("isClimbing", true);
         }
 
@@ -741,14 +796,14 @@ public class sCharacterController : MonoBehaviour
             if(!isJumping)
             {
                 // WALL JUMP
-                if (currentState == PlayerControlState.CLIMBING)
+                if (currentState == ePlayerControlState.CLIMBING)
                 {
                     isJumping = true;
                     rb.AddForce(new Vector3(jumpForce, jumpForce, 0), ForceMode.Impulse);
                 }
 
                 //REGULAR WALK JUMP
-                else if (currentState == PlayerControlState.WALKING)
+                else if (currentState == ePlayerControlState.WALKING)
                 {
                     isJumping = true;
                     rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
@@ -916,6 +971,37 @@ public class sCharacterController : MonoBehaviour
         }
 
     }
+
+    void ToggleUmbrella()
+    {
+
+        Debug.Log("Umbrella Toggled");
+
+        isHoldingUmbrella = !isHoldingUmbrella;
+        
+        if (isHoldingUmbrella)
+        {
+            if (currentState != ePlayerControlState.CLIMBING)
+            {
+
+                umbrella.SetActive(true);
+                Physics.gravity = normalGravity + umbrellaGravityReductionForce;
+
+            }
+           
+
+        }
+
+        else
+        {
+
+            umbrella.SetActive(false);
+            Physics.gravity = normalGravity;
+        }
+
+    }
+
+
 
     void CameraUpdate()
     {
