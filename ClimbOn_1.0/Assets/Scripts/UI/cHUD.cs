@@ -45,7 +45,7 @@ public class cHUD : MonoBehaviour
     void CollectibleUpdate()
     {
 
-        collectiblesNumber.text = sCharacterController.collectiblesHeld.ToString() + "/" + sCharacterController.totalCollectibles;
+        //collectiblesNumber.text = sCharacterController.collectiblesHeld.ToString() + "/" + sCharacterController.totalCollectibles;
 
     }
 
