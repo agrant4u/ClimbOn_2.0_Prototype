@@ -61,19 +61,17 @@ public class GameManager : MonoBehaviour
         }
 
 
-  }
+        }
     
 
 
 
-    public void LoadScene(eScene _sceneToLoad)
+    public void LoadScene(eScene _newScene)
     {
+        
+        Debug.Log("sceneName to load: " + _newScene);
 
-        //curScene = _newScene;
-
-        //Debug.Log("sceneName to load: " + _newScene);
-
-        SceneManager.LoadScene((int)_sceneToLoad);
+        SceneManager.LoadScene((int)_newScene);
 
 
     }

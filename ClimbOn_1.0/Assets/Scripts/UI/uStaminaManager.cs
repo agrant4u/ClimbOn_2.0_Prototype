@@ -11,8 +11,8 @@ public class uStaminaManager : MonoBehaviour
 
     void Start()
     {
-        //staminaText.color = Color.black;
-        //staminaBar.color = Color.cyan;
+        staminaText.color = Color.black;
+        staminaBar.color = Color.cyan;
         staminaBar.fillAmount = sCharacterController.maxStamina;
     }
 
@@ -32,9 +32,6 @@ public class uStaminaManager : MonoBehaviour
         if (currentStamina <= (maxStamina * 0.1))
             staminaBar.color = Color.red;
         else
-        {
-            //staminaBar.color = Color.cyan;
-        }
-
+            staminaBar.color = Color.cyan;
     }
 }

@@ -328,28 +328,21 @@ MonoBehaviour:
   climbSpeed: 7
   walkSpeed: 10
   sprintMultiplier: 2
-  speedBoostTime: 5
   jumpForce: 7
   cameraTarget: {fileID: 5487325909927102160}
   camController: {fileID: 0}
-  cam: {fileID: 0}
   currentState: 1
-  maxFallVelocity: 20
   maxHitPoints: 100
-  fallKillDistance: 10
+  maxStamina: 100
   staminaDrainPerSec: 5
   staminaRecoveryPerSec: 2
+  maxClimbStamina: 100
   staminaClimbDrainPerSec: 5
   staminaClimbRecoveryPerSec: 2
-  startingPosition: {fileID: 0}
+  checkPoints: []
   masterPlayer: {fileID: 5487325911316822251}
-  umbrella: {fileID: 0}
-  umbrellaGravityReductionForce: 2
   animController: {fileID: 5487325911316822261}
   animatorSpeed: 3
-  grappleGun: {fileID: 0}
-  isGrappling: 0
-  reticle: {fileID: 0}
 --- !u!1 &5487325910401171241
 GameObject:
   m_ObjectHideFlags: 0

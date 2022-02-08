@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class sFallingRockBehavior : MonoBehaviour
+public class sRockBehavior : MonoBehaviour
 {
     public int rockFallPower = 100;
 

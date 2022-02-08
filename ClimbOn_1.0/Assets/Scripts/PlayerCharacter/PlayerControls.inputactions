@@ -14,12 +14,12 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Umbrella",
+                    "name": "LetGo",
                     "type": "Button",
                     "id": "10d69b32-dc84-483f-a160-3c28d9fee532",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=2)"
+                    "interactions": "Press"
                 },
                 {
                     "name": "Sprint",
@@ -30,6 +30,14 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
+                    "name": "SprintRelease",
+                    "type": "Button",
+                    "id": "89a68841-62dc-4676-8947-93657ceff8b2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
+                },
+                {
                     "name": "GrappleShoot",
                     "type": "Button",
                     "id": "7fdd21c5-ab3d-44df-b5ce-34fc1dfc4f4b",
@@ -38,28 +46,20 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
-                    "name": "GrappleAim",
-                    "type": "Button",
-                    "id": "4b98130a-5fc7-4711-8266-b73354ae3e7f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)"
-                },
-                {
-                    "name": "GrapplePull",
-                    "type": "Button",
-                    "id": "27ef7427-fe71-4ca0-b7f9-a38df57a2b69",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press"
-                },
-                {
                     "name": "LegLeft",
                     "type": "Button",
                     "id": "3ef4c516-9e7c-4fe1-8706-6e3e33468ee8",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Hold"
+                },
+                {
+                    "name": "GrappleAim",
+                    "type": "Button",
+                    "id": "4b98130a-5fc7-4711-8266-b73354ae3e7f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
                 },
                 {
                     "name": "Movement",
@@ -78,12 +78,12 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Mantle",
+                    "name": "GrapplePull",
                     "type": "Button",
-                    "id": "a08db63d-26f3-4e9a-94b5-fcf820534f25",
+                    "id": "27ef7427-fe71-4ca0-b7f9-a38df57a2b69",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=2)"
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -112,11 +112,11 @@
                 {
                     "name": "",
                     "id": "590da265-ed56-44a2-a64a-e751a9cd7df6",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Umbrella",
+                    "action": "LetGo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -127,7 +127,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Umbrella",
+                    "action": "LetGo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -199,6 +199,17 @@
                 },
                 {
                     "name": "",
+                    "id": "db7a0508-f39b-4b1b-8baa-9457df7cd8be",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GrappleAim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f56e35a7-18f6-4951-a893-cc679e361da4",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -265,23 +276,12 @@
                 },
                 {
                     "name": "",
-                    "id": "33474e15-836a-479f-b43f-55182a4b1a06",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "9e5f45f3-7968-4115-80e7-112d8db252de",
+                    "path": "<XInputController>/rightStick",
                     "interactions": "",
-                    "processors": "NormalizeVector2",
+                    "processors": "InvertVector2(invertY=false)",
                     "groups": "",
                     "action": "Camera",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "db7a0508-f39b-4b1b-8baa-9457df7cd8be",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GrappleAim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -298,12 +298,12 @@
                 },
                 {
                     "name": "",
-                    "id": "4a263e98-82ee-4de0-95f4-993d12f3dc4e",
-                    "path": "<Gamepad>/buttonWest",
+                    "id": "5569debe-bd26-4365-ac83-1a30a3e19924",
+                    "path": "<Gamepad>/buttonNorth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Mantle",
+                    "action": "SprintRelease",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

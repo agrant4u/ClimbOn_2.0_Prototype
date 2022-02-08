@@ -9,29 +9,14 @@ public class cHUD : MonoBehaviour
 
     public Text textTime;
 
-    public Text collectiblesNumber;
-
     private void Start()
     {
         startingTime = Time.time;
         textTime.text = startingTime.ToString();
-
-
-
     }
 
     void Update()
     {
-
-        ClockUpdate();
-
-        CollectibleUpdate();
-
-    }
-
-    void ClockUpdate()
-    {
-
 
         float t = Time.time - startingTime;
 
@@ -39,14 +24,6 @@ public class cHUD : MonoBehaviour
         string seconds = (t % 60).ToString("f2");// f2 indicates how many floats we want timer to show
 
         textTime.text = minutes + ":" + seconds;
-
-    }
-
-    void CollectibleUpdate()
-    {
-
-        //collectiblesNumber.text = sCharacterController.collectiblesHeld.ToString() + "/" + sCharacterController.totalCollectibles;
-
     }
 
 }
